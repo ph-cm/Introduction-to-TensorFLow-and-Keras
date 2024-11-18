@@ -9,3 +9,11 @@ print(a)
 
 print(a-a[0])
 print(tf.exp(a)[0].numpy())
+
+#Variables
+s = tf.Variable(tf.zeros_like(a[0]))
+for i in a:
+    s.assign_add(i)
+print(s)
+
+tf.reduce_sum(a,axis=0)
