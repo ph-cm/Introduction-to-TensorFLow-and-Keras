@@ -17,3 +17,13 @@ for i in a:
 print(s)
 
 tf.reduce_sum(a,axis=0)
+
+#Computing Gradients
+a = tf.random.normal(shape=(2, 2))
+b = tf.random.normal(shape=(2, 2))
+
+with tf.GradientTape() as tape:
+    tape.watch(a)
+    c = tf.sqrt(tf.square(a) + tf.square(b))
+    dc_da = tape.gradient(c, a)
+    print(dc_da)
