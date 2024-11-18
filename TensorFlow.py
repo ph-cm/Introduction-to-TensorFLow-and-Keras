@@ -82,3 +82,17 @@ x = np.array([min(train_x), max(train_x)])
 y = w.numpy()[0,0]*x+b.numpy()[0]
 plt.plot(x,y,color='red')
 plt.show()
+
+#Computional Graph and GPU Computations
+
+@tf.function
+def train_on_batch(x,y):
+    with tf.GradientTape() as tape:
+        predictions = f(x)
+        loss = compute_loss(y, predictions)
+        dloss_dw, dloss_db = tape.gradient(loss, [w,b])
+    w.assign_sub(learning_rate * dloss_dw)
+    b.assign_sub(learning_rate * dloss_db)
+    return loss
+#code doesnt change at all but if it runs in a GPU and on a larger dataset-it would have a difference in speed
+       
