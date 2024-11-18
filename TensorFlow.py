@@ -96,3 +96,14 @@ def train_on_batch(x,y):
     return loss
 #code doesnt change at all but if it runs in a GPU and on a larger dataset-it would have a difference in speed
        
+#Dataste API
+w.assign([[10.0]])
+b.assign([0.0])
+
+dataset =  tf.data.Dataset.from_tensor_slices((train_x.astype(np.float32), train_labels.astype(np.float32)))
+dataset = dataset.shuffle(buffer_size=1024).batch(256)
+
+for epoch in range(10):
+    for step, (x, y) in enumerate(dataset):
+        loss = train_on_batch(tf.reshape(x,(-1,1)), tf.reshape(y,(-1,1)))
+    print('Epoch %d: last batch loss = %.4f' % (epoch, float(loss)))
