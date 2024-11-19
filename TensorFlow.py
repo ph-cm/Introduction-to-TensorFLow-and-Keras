@@ -139,3 +139,8 @@ def plot_dataset(features, labels, W=None, b=None):
     fig.show()
     plt.show()
 plot_dataset(train_x,train_labels)
+
+#NOrmalizing Data
+train_x_norm = (train_x-np.min(train_x)) / (np.max(train_x)-np.min(train_x))
+valid_x_norm = (valid_x-np.min(train_x)) / (np.max(train_x)-np.min(train_x))
+test_x_norm = (test_x-np.min(train_x)) / (np.max(train_x)-np.min(train_x))
