@@ -216,3 +216,19 @@ h = model.fit(train_x_norm, train_labels,batch_size=8, epochs=15)
 
 plt.plot(h.history['accuracy'])
 plt.show()
+
+#Sequential API
+
+model = tf.keras.models.Sequential()
+model.add(tf.keras.layers.Dense(5,activation='sigmoid',input_shape=(2,)))
+model.add(tf.keras.layers.Dense(1,activation='sigmoid'))
+
+model.compile(optimizer=tf.keras.optimizers.Adam(0.1),
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+model.summary()
+model.fit(train_x_norm,train_labels,validation_data=(test_x_norm,test_labels),batch_size=8,epochs=15)
+
+plt.plot(h.history['accuracy'])
+plt.show()
+
