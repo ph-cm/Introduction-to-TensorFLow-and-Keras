@@ -202,5 +202,17 @@ for epoch in range(20):
         loss, acc = train_on_batch(tf.reshape(x,(-1,2)), tf.reshape(y,(-1,1)))
     print('Epoch %d: last batch loss = %.4f, acc = %.4f' % (epoch, float(loss), acc))
     
+#Functional API
 
-    
+inputs = tf.keras.Input(shape=(2,))
+z = tf.keras.layers.Dense(1, kernel_initializer='glorot_uniform', activation='sigmoid')(inputs)
+model = tf.keras.models.Model(inputs,z)
+
+model.compile(optimizer=tf.keras.optimizers.Adam(0.1),
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+model.summary()
+h = model.fit(train_x_norm, train_labels,batch_size=8, epochs=15)
+
+plt.plot(h.history['accuracy'])
+plt.show()
