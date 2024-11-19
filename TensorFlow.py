@@ -178,3 +178,29 @@ ax[1].scatter(test_x[:,0],test_x[:,1],c=valid_labels)
 plt.show()
 
 tf.reduce_mean(tf.cast(((pred[0]>0.5)==test_labels),tf.float32))
+
+#Using TensorFlow/Keras Optimizers
+
+optimizer = tf.keras.optimizers.Adam(0.01)
+
+W = tf.Variable(tf.random.normal(shape=(2,1)))
+b = tf.Variable(tf.zeros(shape=(1,), dtype=tf.float32))
+
+@tf.function
+def train_on_batch(x, y):
+    vars = [W, b]
+    with tf.GradientTape() as tape:
+        z = tf.sigmoid(tf.matmul(x, W) + b)
+        loss = tf.reduce_mean(tf.keras.losses.binary_crossentropy(z,y))
+        correct_prediction = tf.equal(tf.round(y), tf.round(z))
+        acc = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+        grads = tape.gradient(loss, vars)
+        optimizer.apply_gradients(zip(grads, vars))
+    return loss, acc
+for epoch in range(20):
+    for step, (x, y) in enumerate(dataset):
+        loss, acc = train_on_batch(tf.reshape(x,(-1,2)), tf.reshape(y,(-1,1)))
+    print('Epoch %d: last batch loss = %.4f, acc = %.4f' % (epoch, float(loss), acc))
+    
+
+    
