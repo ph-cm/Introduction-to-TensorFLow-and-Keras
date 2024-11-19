@@ -144,3 +144,37 @@ plot_dataset(train_x,train_labels)
 train_x_norm = (train_x-np.min(train_x)) / (np.max(train_x)-np.min(train_x))
 valid_x_norm = (valid_x-np.min(train_x)) / (np.max(train_x)-np.min(train_x))
 test_x_norm = (test_x-np.min(train_x)) / (np.max(train_x)-np.min(train_x))
+
+#training One-Layer Perceptron
+
+W = tf.Variable(tf.random.normal(shape=(2,1)), dtype = tf.float32)
+b = tf.Variable(tf.zeros(shape=(1,), dtype=tf.float32))
+
+learning_rate = 0.1
+
+@tf.function
+def train_on_batch(x, y):
+    with tf.GradientTape() as tape:
+        z = tf.matmul(x, W) + b
+        loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=y,logits=z))
+    dloss_dw, dloss_db = tape.gradient(loss, [W, b])
+    W.assign_sub(learning_rate * dloss_dw)
+    b.assign_sub(learning_rate * dloss_db)
+    return loss
+
+dataset = tf.data.Dataset.from_tensor_slices((train_x_norm.astype(np.float32), train_labels.astype(np.float32)))
+dataset = dataset.shuffle(128).batch(2)
+
+for epoch in range(10):
+    for step, (x, y) in enumerate(dataset):
+        loss = train_on_batch(x, tf.expand_dims(y,1))
+    print('Epoch %d: last batch loss = %.4f' % (epoch, float(loss)))
+plot_dataset(train_x,train_labels, W.numpy(), b.numpy())
+
+pred = tf.matmul(test_x,W)+b
+fig,ax = plt.subplots(1,2)
+ax[0].scatter(test_x[:,0],test_x[:,1],c=pred[:,0]>0.5)
+ax[1].scatter(test_x[:,0],test_x[:,1],c=valid_labels)
+plt.show()
+
+tf.reduce_mean(tf.cast(((pred[0]>0.5)==test_labels),tf.float32))
